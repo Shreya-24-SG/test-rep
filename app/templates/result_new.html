@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prediction Result</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f0f9ff; }
+    .container { margin-top: 60px; max-width: 700px; }
+    .card { border-radius: 15px; padding: 30px; text-align: center; }
+    .risk { font-size: 1.5rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card shadow">
+      <h2 class="text-primary">Prediction Result</h2>
+      <p class="risk text-{{ color }}">{{ pred }} ({{ (prob*100) | round(2) }}%)</p>
+      
+      <h5 class="mt-4">Patient Info</h5>
+      <ul class="list-group">
+        <li class="list-group-item"><strong>Name:</strong> {{ patient.Patient_Name }}</li>
+        <li class="list-group-item"><strong>Age:</strong> {{ patient.Age }}</li>
+        <li class="list-group-item"><strong>Weight:</strong> {{ patient.Weight }}</li>
+        <li class="list-group-item"><strong>Date:</strong> {{ patient.Date }}</li>
+      </ul>
+
+      <div class="mt-4">
+        <a href="/predict_new" class="btn btn-primary">Predict Again</a>
+        <form action="/download_report_new" method="POST">
+  {% for key, value in patient.items() %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+  {% endfor %}
+  <input type="hidden" name="result" value="{{ result }}">
+  <button type="submit" class="btn btn-primary mt-3">Download Report (PDF)</button>
+</form>
+
+        <a href="/" class="btn btn-secondary">Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

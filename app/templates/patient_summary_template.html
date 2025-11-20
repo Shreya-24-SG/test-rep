@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Doctor to Patient Summary</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fdf6f0; /* pastel background */
+      padding: 10px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #ffffffcc;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      background-color: #a1c4fd; /* main color */
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 1.6rem;
+    }
+
+    table {
+      width: 50%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    table th, table td {
+      border: 1px solid #2c3e50;
+      padding: 10px 12px;
+      font-size: 1.6rem;
+    }
+
+    table th {
+      background-color: #fdf6f0;
+      color: black;
+      text-align: left;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .summary-text {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      text-align: justify;
+      padding: 5px 0;
+    }
+
+    .subsection {
+      margin-bottom: 12px;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    ul li {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <h2>Doctor-to-Patient Summary</h2>
+    <p><strong>Generated on:</strong> {{ timestamp }}</p>
+
+    <!-- Patient Details -->
+    <div class="section">
+      <h3>Patient Details</h3>
+      <table>
+        <tr><th>Name</th><td>{{ patient.Patient_Name|default('N/A') }}</td></tr>
+        <tr><th>Age</th><td>{{ patient.Age|default('N/A') }} years</td></tr>
+        <tr><th>Weight</th><td>{{ patient.Weight|default('N/A') }} kg</td></tr>
+        <tr><th>Date</th><td>{{ patient.Date|default('N/A') }}</td></tr>
+      </table>
+    </div>
+
+    <!-- Prediction Summary -->
+    <div class="section">
+      <h3>Prediction Summary</h3>
+      <p class="summary-text">{{ summary.split('\n')[0] }}</p>
+    </div>
+
+    <!-- Risk Factors & Observations -->
+    <div class="section">
+      <h3>Key Risk Factors / Observations</h3>
+      <p class="summary-text">
+        {% for line in summary.split('\n')[1:5] %}
+          {{ line }}<br>
+        {% endfor %}
+      </p>
+    </div>
+
+    <!-- Lifestyle & Support -->
+    <div class="section">
+      <h3>Lifestyle & Support Recommendations</h3>
+      <p class="summary-text">
+        {% for line in summary.split('\n')[5:12] %}
+          {{ line }}<br>
+        {% endfor %}
+      </p>
+    </div>
+
+    <!-- Delivery Planning -->
+    <div class="section">
+      <h3>Delivery Planning</h3>
+      <p class="summary-text">
+        {% for line in summary.split('\n')[12:16] %}
+          {{ line }}<br>
+        {% endfor %}
+      </p>
+    </div>
+
+    <!-- Emergency Signs -->
+    <div class="section">
+      <h3>Emergency Signs to Watch For</h3>
+      <p class="summary-text">
+        {% for line in summary.split('\n')[16:] %}
+          {{ line }}<br>
+        {% endfor %}
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

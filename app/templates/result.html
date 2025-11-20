@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prediction Result</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+      min-height: 100vh;
+    }
+    .card {
+      border-radius: 15px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress {
+      height: 30px;
+      border-radius: 15px;
+    }
+    .prob-bar {
+      width: {{ (prob*100)|round(2) }}%;
+      background-color: {{ color }};
+      height: 30px;
+      border-radius: 15px;
+      font-weight: bold;
+      line-height: 30px;
+      text-align: center;
+      color: white;
+    }
+
+    /* Scan Image Container */
+    #scan-container {
+      width: 100%;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    #scan-img {
+      max-height: 100%;
+      max-width: 80%;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      animation: scan-move 3s linear;
+    }
+
+    /* Moving Scan Effect on Image */
+    #scan-container::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(0,255,150,0.4), rgba(255,255,255,0));
+      animation: scan-line 3s linear;
+    }
+
+    @keyframes scan-line {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    @keyframes scan-move {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    #scan-text {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+      color: #fff;
+      font-size: 1.3rem;
+      text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ccff;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="card shadow p-4">
+      <h2 class="text-center text-primary mb-4">Prediction Result</h2>
+
+      <!-- Image Scanning Animation -->
+      <div id="scan-container">
+        <!-- Local static image -->
+        <img id="scan-img" src="{{ url_for('static', filename='preg.jpeg') }}" alt="Pregnant Woman Scanning">
+        <div id="scan-text">Scanning...</div>
+      </div>
+
+      <!-- Result Content (hidden initially) -->
+      <div id="result-container" style="display:none;">
+
+        <!-- Patient Info -->
+        <h4>Patient Info</h4>
+        <ul class="list-group list-group-flush mb-4">
+          <li class="list-group-item"><strong>Name:</strong> {{ patient.Patient_Name }}</li>
+          <li class="list-group-item"><strong>Age:</strong> {{ patient.Age }} years</li>
+          <li class="list-group-item"><strong>Weight:</strong> {{ patient.Weight }} kg</li>
+          <li class="list-group-item"><strong>Date:</strong> {{ patient.Date }}</li>
+        </ul>
+
+        <!-- Prediction -->
+        <h4>Prediction</h4>
+        <p class="fs-5"><strong>Result:</strong> {{ pred }}</p>
+
+        <!-- Probability Bar -->
+        <h5 class="mt-3">Probability of Preterm Birth</h5>
+        <div class="progress mb-4">
+          <div class="prob-bar">{{ (prob*100)|round(2) }}%</div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="text-center">
+          <a href="/predict" class="btn btn-secondary me-2">Go Back</a>
+          <a href="/" class="btn btn-primary me-2">Dashboard</a>
+
+          <!-- PDF Download Form -->
+          <form action="/report_pdf" method="POST" style="display:inline-block;">
+            <input type="hidden" name="patient_json" value='{{ patient_json|safe }}'>
+            <input type="hidden" name="pred" value="{{ pred }}">
+            <input type="hidden" name="prob" value="{{ prob }}">
+            <input type="hidden" name="features" value='{{ features|tojson|safe }}'>
+            <input type="hidden" name="ideal_ranges" value='{{ ideal_ranges|tojson|safe }}'>
+            <button type="submit" class="btn btn-warning">Download PDF Report</button>
+          </form>
+
+          <!-- Doctor-to-Patient Summary Download -->
+<form action="/patient_summary_pdf" method="POST" style="display:inline-block;">
+  <input type="hidden" name="patient_json" value='{{ patient_json|safe }}'>
+  <input type="hidden" name="pred" value="{{ pred }}">
+  <input type="hidden" name="features" value='{{ features|tojson|safe }}'>
+  <input type="hidden" name="ideal_ranges" value='{{ ideal_ranges|tojson|safe }}'>
+  <button type="submit" class="btn btn-info mt-3">Download Doctor-to-Patient Summary</button>
+</form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Reveal result after 3s -->
+  <script>
+    setTimeout(() => {
+      document.getElementById("scan-container").style.display = "none";
+      document.getElementById("result-container").style.display = "block";
+    }, 3000);
+  </script>
+</body>
+</html>

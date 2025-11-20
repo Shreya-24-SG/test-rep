@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Preterm Birth Prediction</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+      min-height: 100vh;
+    }
+    .card {
+      border-radius: 15px;
+    }
+    .tooltip-inner {
+      max-width: 200px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="card shadow p-4">
+      <h2 class="text-center text-primary mb-4">Preterm Birth Prediction</h2>
+
+      <!-- Patient Info Section -->
+      <h4>Patient Info</h4>
+      <form method="POST">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="Patient_Name" required>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Age (years)</label>
+            <input type="number" class="form-control" name="Age" required>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Weight (kg)</label>
+            <input type="number" class="form-control" name="Weight" required>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-control" name="Date" required>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- Feature Inputs with Tooltips and Range Placeholders -->
+        <h4>Contraction & Features</h4>
+        {% for key, val in features.items() %}
+        <div class="mb-3">
+          <label class="form-label" 
+                 data-bs-toggle="tooltip" 
+                 title="Acceptable range: {{ feature_ranges[key].min }} - {{ feature_ranges[key].max }}">
+            {{ key }}
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 name="{{ key }}" 
+                 value="{{ val }}" 
+                 placeholder="{{ feature_ranges[key].min }} - {{ feature_ranges[key].max }}">
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success w-100 mt-3">Predict</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el))
+  </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Preterm Birth Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { text-align: center; color: #4a90e2; }
+    h3 { margin-top: 20px; color: #333; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #e0f7fa; }
+  </style>
+</head>
+<body>
+  <h2>Preterm Birth Prediction Report</h2>
+
+  <h3>Patient Info</h3>
+  <table>
+    <tr><th>Name</th><th>Age</th><th>Weight</th><th>Date</th></tr>
+    <tr>
+      <td>{{ patient.Patient_Name }}</td>
+      <td>{{ patient.Age }}</td>
+      <td>{{ patient.Weight }}</td>
+      <td>{{ patient.Date }}</td>
+    </tr>
+  </table>
+
+  <h3>Prediction Result</h3>
+  <table>
+    <tr><th>Result</th><th>Probability (%)</th></tr>
+    <tr>
+      <td>{{ pred }}</td>
+      <td>{{ (prob*100)|round(2) }}</td>
+    </tr>
+  </table>
+
+  <h3>Feature Details</h3>
+  <table>
+    <tr>
+      <th>Feature</th>
+      <th>Entered Value</th>
+      <th>Ideal Low-Risk Range</th>
+    </tr>
+    {% for key, val in features.items() %}
+    <tr>
+      <td>{{ key }}</td>
+      <td>{{ val[0] }}</td>
+      <td>{{ ideal_ranges[key].min }} - {{ ideal_ranges[key].max }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <p>Report generated on: {{ timestamp }}</p>
+</body>
+</html>
